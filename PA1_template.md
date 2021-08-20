@@ -4,9 +4,6 @@ output:
   html_document:
     keep_md: true
 ---
-
-
-
 ## Teste
 ### Code for reading in the dataset and/or processing the data
 
