@@ -163,7 +163,9 @@ interval <- df[which(df$mean == max(df$mean)),]$interval
 print(paste("The 5-minute interval that, on average, contains the maximum number of steps is", interval, "or", paste0(interval%/%100, ":", interval%%100)))
 ```
 
-[1] "The 5-minute interval that, on average, contains the maximum number of steps is 835 or 8:35"
+```
+## [1] "The 5-minute interval that, on average, contains the maximum number of steps is 835 or 8:35"
+```
 ### Code to describe and show a strategy for imputing missing data
 
 #### Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with \color{red}{\verb|NA|}NAs)
@@ -172,7 +174,9 @@ print(paste("The 5-minute interval that, on average, contains the maximum number
 print(paste("The total number of missing values in the dataset is", nrow(data[which(is.na(data$steps)),])))
 ```
 
-[1] "The total number of missing values in the dataset is 2304"
+```
+## [1] "The total number of missing values in the dataset is 2304"
+```
 
 #### Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
@@ -225,7 +229,9 @@ a
 print(paste("The new mean and median are", round(mean(NewData$steps),2),"and", paste0(median(NewData$steps), ", respectively.")))
 ```
 
-[1] "The new mean and median are 186.91 and 0, respectively."
+```
+## [1] "The new mean and median are 186.91 and 0, respectively."
+```
 
 #### Do these values differ from the estimates from the first part of the assignment? 
 
@@ -237,7 +243,9 @@ if(median(NewData$steps) != median(data1$steps)){ answer2 <-"the median has chan
 print(paste(answer,"and", answer2))
 ```
 
-[1] "The mean has changed and the median hasn't changed"
+```
+## [1] "The mean has changed and the median hasn't changed"
+```
 
 #### What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
@@ -250,7 +258,9 @@ if(sum(NewData$steps) - sum(data1$steps) > 0){
 print(answer)
 ```
 
-[1] "The number of steps increased 2712960 steps."
+```
+## [1] "The number of steps increased 2712960 steps."
+```
 ### Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
 #### Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
 
