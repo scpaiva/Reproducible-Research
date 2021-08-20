@@ -4,7 +4,9 @@ output:
   html_document:
     keep_md: true
 ---
+
 ## Teste
+
 ### Code for reading in the dataset and/or processing the data
 ```{R echo = TRUE}
 temp <- tempfile()
@@ -12,6 +14,7 @@ download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.z
 data <- read.csv(unz(temp, "activity.csv"))
 unlink(temp)
 ```
+
 ### Histogram of the total number of steps taken each day
 ```{R echo = TRUE}
 #Remove rows whose steps record is na
@@ -97,7 +100,9 @@ b
 interval <- df[which(df$mean == max(df$mean)),]$interval
 print(paste("The 5-minute interval that, on average, contains the maximum number of steps is", interval, "or", paste0(interval%/%100, ":", interval%%100)))
 ```
+
 ### Code to describe and show a strategy for imputing missing data
+
 
 #### Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with \color{red}{\verb|NA|}NAs)
 ```{R echo = TRUE}
@@ -168,7 +173,9 @@ if(sum(NewData$steps) - sum(data1$steps) > 0){
 }
 print(answer)
 ```
+
 ### Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
+
 #### Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
 ```{R echo = TRUE}
 #install.packages("timeDate")
@@ -185,6 +192,7 @@ Data1[which(Data1$weekendDay == FALSE),]$weekendDay <- "weekday"
 #Transform to factor variable
 Data1$weekendDay <- as.factor(Data1$weekendDay)
 ```
+
 #### Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 ```{R echo = TRUE}
 #install.packages("ggpubr")
@@ -235,3 +243,5 @@ ggarrange(weekend, weekday,
           labels = c("weekend", "weekday"),
           ncol = 1, nrow = 2)
 ```
+
+

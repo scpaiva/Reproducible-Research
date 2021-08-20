@@ -4,7 +4,9 @@ output:
   html_document:
     keep_md: true
 ---
+
 ## Teste
+
 ### Code for reading in the dataset and/or processing the data
 
 ```r
@@ -13,6 +15,7 @@ download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.z
 data <- read.csv(unz(temp, "activity.csv"))
 unlink(temp)
 ```
+
 ### Histogram of the total number of steps taken each day
 
 ```r
@@ -166,7 +169,9 @@ print(paste("The 5-minute interval that, on average, contains the maximum number
 ```
 ## [1] "The 5-minute interval that, on average, contains the maximum number of steps is 835 or 8:35"
 ```
+
 ### Code to describe and show a strategy for imputing missing data
+
 
 #### Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with \color{red}{\verb|NA|}NAs)
 
@@ -261,7 +266,9 @@ print(answer)
 ```
 ## [1] "The number of steps increased 2712960 steps."
 ```
+
 ### Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
+
 #### Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
 
 ```r
@@ -279,6 +286,7 @@ Data1[which(Data1$weekendDay == FALSE),]$weekendDay <- "weekday"
 #Transform to factor variable
 Data1$weekendDay <- as.factor(Data1$weekendDay)
 ```
+
 #### Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
 ```r
@@ -332,3 +340,5 @@ ggarrange(weekend, weekday,
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+
+
