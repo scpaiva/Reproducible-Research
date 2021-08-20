@@ -6,14 +6,14 @@ output:
 ---
 ## Teste
 ### Code for reading in the dataset and/or processing the data
-```{r  echo = TRUE}
+```{r,  echo = TRUE, results='asis'}
 temp <- tempfile()
 download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip",temp)
 data <- read.csv(unz(temp, "activity.csv"))
 unlink(temp)
 ```
 ### Histogram of the total number of steps taken each day
-```{r}
+```{r,  echo = TRUE, results='asis'}
 #Remove rows whose steps record is na
 data1 <- data[which(!is.na(data$steps)),]
 
@@ -67,7 +67,7 @@ df
 ```
 
 ### Time series plot of the average number of steps taken
-```{r}
+```{r,  echo = TRUE, results='asis'}
 #Finds the unique records of the variable interval
 times <- unique(data1$interval)
 
@@ -93,20 +93,20 @@ b
 ```
 
 ### The 5-minute interval that, on average, contains the maximum number of steps
-```{r}
+```{r,  echo = TRUE, results='asis'}
 interval <- df[which(df$mean == max(df$mean)),]$interval
 print(paste("The 5-minute interval that, on average, contains the maximum number of steps is", interval, "or", paste0(interval%/%100, ":", interval%%100)))
 ```
 ### Code to describe and show a strategy for imputing missing data
 
 #### Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with \color{red}{\verb|NA|}NAs)
-```{r}
+```{r,  echo = TRUE, results='asis'}
 print(paste("The total number of missing values in the dataset is", nrow(data[which(is.na(data$steps)),])))
 ```
 
 #### Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
-```{r}
+```{r,  echo = TRUE, results='asis'}
 #Copy data to NewData
 NewData <- data
 
@@ -119,7 +119,7 @@ for (i in 1:length(times)){
 ### Histogram of the total number of steps taken each day after missing values are imputed
 
 #### Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. 
-```{r}
+```{r,  echo = TRUE, results='asis'}
 #Finds the unique records of the variable date
 days <- unique(NewData$date)
 
@@ -150,7 +150,7 @@ print(paste("The new mean and median are", round(mean(NewData$steps),2),"and", p
 ```
 
 #### Do these values differ from the estimates from the first part of the assignment? 
-```{r}
+```{r,  echo = TRUE, results='asis'}
 if(mean(NewData$steps) != mean(data1$steps)){ answer <- "The mean has changed"}else{answer <- "The mean hasn't changed"}
 
 if(median(NewData$steps) != median(data1$steps)){ answer2 <-"the median has changed"}else{answer2 <- "the median hasn't changed"}
@@ -160,7 +160,7 @@ print(paste(answer,"and", answer2))
 ```
 
 #### What is the impact of imputing missing data on the estimates of the total daily number of steps?
-```{r}
+```{r,  echo = TRUE, results='asis'}
 if(sum(NewData$steps) - sum(data1$steps) > 0){ 
     answer <- paste("The number of steps increased", sum(NewData$steps) - sum(data1$steps), "steps.")
 }else{
@@ -170,7 +170,7 @@ print(answer)
 ```
 ### Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
 #### Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
-```{r}
+```{r,  echo = TRUE, results='asis'}
 #install.packages("timeDate")
 library(timeDate)
 
@@ -186,7 +186,7 @@ Data1[which(Data1$weekendDay == FALSE),]$weekendDay <- "weekday"
 Data1$weekendDay <- as.factor(Data1$weekendDay)
 ```
 #### Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
-```{r}
+```{r,  echo = TRUE, results='asis'}
 #install.packages("ggpubr")
 library(ggpubr)
 
