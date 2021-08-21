@@ -5,9 +5,7 @@ output:
     keep_md: true
 ---
 
-## Teste
-
-### Code for reading in the dataset and/or processing the data
+## Code for reading in the dataset and/or processing the data
 
 ```r
 temp <- tempfile()
@@ -16,7 +14,7 @@ data <- read.csv(unz(temp, "activity.csv"))
 unlink(temp)
 ```
 
-### Histogram of the total number of steps taken each day
+## Histogram of the total number of steps taken each day
 
 ```r
 #Remove rows whose steps record is na
@@ -51,7 +49,7 @@ a
 
 ![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
 
-### Mean and median number of steps taken each day
+## Mean and median number of steps taken each day
 
 ```r
 #Mean and median of all records of same date
@@ -130,7 +128,7 @@ df
 ## 53 2012-11-29 24.47      0
 ```
 
-### Time series plot of the average number of steps taken
+## Time series plot of the average number of steps taken
 
 ```r
 #Finds the unique records of the variable interval
@@ -159,7 +157,7 @@ b
 
 ![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
-### The 5-minute interval that, on average, contains the maximum number of steps
+## The 5-minute interval that, on average, contains the maximum number of steps
 
 ```r
 interval <- df[which(df$mean == max(df$mean)),]$interval
@@ -170,10 +168,10 @@ print(paste("The 5-minute interval that, on average, contains the maximum number
 ## [1] "The 5-minute interval that, on average, contains the maximum number of steps is 835 or 8:35"
 ```
 
-### Code to describe and show a strategy for imputing missing data
+## Code to describe and show a strategy for imputing missing data
 
 
-#### Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with \color{red}{\verb|NA|}NAs)
+## Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with \color{red}{\verb|NA|}NAs)
 
 ```r
 print(paste("The total number of missing values in the dataset is", nrow(data[which(is.na(data$steps)),])))
@@ -183,7 +181,7 @@ print(paste("The total number of missing values in the dataset is", nrow(data[wh
 ## [1] "The total number of missing values in the dataset is 2304"
 ```
 
-#### Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc. Create a new dataset that is equal to the original dataset but with the missing data filled in.
+## Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
 
 ```r
@@ -196,9 +194,9 @@ for (i in 1:length(times)){
 }
 ```
 
-### Histogram of the total number of steps taken each day after missing values are imputed
+## Histogram of the total number of steps taken each day after missing values are imputed
 
-#### Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. 
+## Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. 
 
 ```r
 #Finds the unique records of the variable date
@@ -238,7 +236,7 @@ print(paste("The new mean and median are", round(mean(NewData$steps),2),"and", p
 ## [1] "The new mean and median are 186.91 and 0, respectively."
 ```
 
-#### Do these values differ from the estimates from the first part of the assignment? 
+## Do these values differ from the estimates from the first part of the assignment? 
 
 ```r
 if(mean(NewData$steps) != mean(data1$steps)){ answer <- "The mean has changed"}else{answer <- "The mean hasn't changed"}
@@ -252,7 +250,7 @@ print(paste(answer,"and", answer2))
 ## [1] "The mean has changed and the median hasn't changed"
 ```
 
-#### What is the impact of imputing missing data on the estimates of the total daily number of steps?
+## What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
 ```r
 if(sum(NewData$steps) - sum(data1$steps) > 0){ 
@@ -267,9 +265,9 @@ print(answer)
 ## [1] "The number of steps increased 2712960 steps."
 ```
 
-### Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
+## Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
 
-#### Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+## Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
 
 ```r
 #install.packages("timeDate")
@@ -287,7 +285,7 @@ Data1[which(Data1$weekendDay == FALSE),]$weekendDay <- "weekday"
 Data1$weekendDay <- as.factor(Data1$weekendDay)
 ```
 
-#### Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
+## Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
 ```r
 #install.packages("ggpubr")

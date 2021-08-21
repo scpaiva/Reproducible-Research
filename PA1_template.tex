@@ -1,0 +1,368 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={PA1\_template.Rmd},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{PA1\_template.Rmd}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\texttt{\{r\ setup,\ include=FALSE\}\ knitr::opts\_chunk\$set(echo\ =\ TRUE)}
+
+\hypertarget{teste}{%
+\subsection{Teste}\label{teste}}
+
+\hypertarget{code-for-reading-in-the-dataset-andor-processing-the-data}{%
+\subsubsection{Code for reading in the dataset and/or processing the
+data}\label{code-for-reading-in-the-dataset-andor-processing-the-data}}
+
+\begin{verbatim}
+temp <- tempfile()
+download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip",temp)
+data <- read.csv(unz(temp, "activity.csv"))
+unlink(temp)
+\end{verbatim}
+
+\hypertarget{histogram-of-the-total-number-of-steps-taken-each-day}{%
+\subsubsection{Histogram of the total number of steps taken each
+day}\label{histogram-of-the-total-number-of-steps-taken-each-day}}
+
+\begin{verbatim}
+#Remove rows whose steps record is na
+data1 <- data[which(!is.na(data$steps)),]
+
+#Finds the unique records of the variable date
+days <- unique(data1$date)
+
+#Sum all records of same date
+for (i in 1:length(days)){
+  subset <- data1[which(data1$date == days[i]),]
+  if(i == 1){
+    df <- data.frame(days[1], sum(subset$steps))
+  }else{
+    df <- rbind(df, c(days[i], sum(subset$steps)))
+  }
+}
+
+#Set column names
+colnames(df) <- c("date","steps")
+
+#Convert to integer
+df$steps <- as.integer(df$steps)
+
+#Histogram
+library(ggplot2)
+
+y <- ggplot(df, aes(x = steps)) 
+a <- y + geom_histogram(bins = 30) + ylab("Frequency")
+a
+\end{verbatim}
+
+\hypertarget{mean-and-median-number-of-steps-taken-each-day}{%
+\subsubsection{Mean and median number of steps taken each
+day}\label{mean-and-median-number-of-steps-taken-each-day}}
+
+\begin{verbatim}
+#Mean and median of all records of same date
+for (i in 1:length(days)){
+  subset <- data1[which(data1$date == days[i]),]
+  if(i == 1){
+    df <- data.frame(days[1], round(mean(subset$steps), 2), median(subset$steps))
+  }else{
+    df <- rbind(df, c(days[i],  round(mean(subset$steps), 2), median(subset$steps)))
+  }
+}
+
+#Set column names
+colnames(df) <- c("date","mean", "median")
+
+#Convert to double
+df$mean <- as.double(df$mean)
+
+df
+\end{verbatim}
+
+\hypertarget{time-series-plot-of-the-average-number-of-steps-taken}{%
+\subsubsection{Time series plot of the average number of steps
+taken}\label{time-series-plot-of-the-average-number-of-steps-taken}}
+
+\begin{verbatim}
+#Finds the unique records of the variable interval
+times <- unique(data1$interval)
+
+#Mean of all records of same interval
+for (i in 1:length(times)){
+  subset <- data1[which(data1$interval == times[i]),]
+  if(i == 1){
+    df <- data.frame(times[1], round(mean(subset$steps), 2))
+  }else{
+    df <- rbind(df, c(times[i],  round(mean(subset$steps), 2)))
+  }
+}
+
+#Set column names
+colnames(df) <- c("interval","mean")
+
+#Convert to double
+df$mean <- as.double(df$mean)
+
+y <- ggplot(df, aes(x = interval, y = mean))
+b <- y + geom_line() # + geom_point()
+b
+\end{verbatim}
+
+\hypertarget{the-5-minute-interval-that-on-average-contains-the-maximum-number-of-steps}{%
+\subsubsection{The 5-minute interval that, on average, contains the
+maximum number of
+steps}\label{the-5-minute-interval-that-on-average-contains-the-maximum-number-of-steps}}
+
+\begin{verbatim}
+interval <- df[which(df$mean == max(df$mean)),]$interval
+print(paste("The 5-minute interval that, on average, contains the maximum number of steps is", interval, "or", paste0(interval%/%100, ":", interval%%100)))
+\end{verbatim}
+
+\hypertarget{code-to-describe-and-show-a-strategy-for-imputing-missing-data}{%
+\subsubsection{Code to describe and show a strategy for imputing missing
+data}\label{code-to-describe-and-show-a-strategy-for-imputing-missing-data}}
+
+\hypertarget{calculate-and-report-the-total-number-of-missing-values-in-the-dataset-i.e.-the-total-number-of-rows-with-nas}{%
+\paragraph{\texorpdfstring{Calculate and report the total number of
+missing values in the dataset (i.e.~the total number of rows with
+\color{red}{\verb|NA|}NAs)}{Calculate and report the total number of missing values in the dataset (i.e.~the total number of rows with NAs)}}\label{calculate-and-report-the-total-number-of-missing-values-in-the-dataset-i.e.-the-total-number-of-rows-with-nas}}
+
+\begin{verbatim}
+print(paste("The total number of missing values in the dataset is", nrow(data[which(is.na(data$steps)),])))
+\end{verbatim}
+
+\hypertarget{devise-a-strategy-for-filling-in-all-of-the-missing-values-in-the-dataset.-the-strategy-does-not-need-to-be-sophisticated.-for-example-you-could-use-the-meanmedian-for-that-day-or-the-mean-for-that-5-minute-interval-etc.-create-a-new-dataset-that-is-equal-to-the-original-dataset-but-with-the-missing-data-filled-in.}{%
+\paragraph{Devise a strategy for filling in all of the missing values in
+the dataset. The strategy does not need to be sophisticated. For
+example, you could use the mean/median for that day, or the mean for
+that 5-minute interval, etc. Create a new dataset that is equal to the
+original dataset but with the missing data filled
+in.}\label{devise-a-strategy-for-filling-in-all-of-the-missing-values-in-the-dataset.-the-strategy-does-not-need-to-be-sophisticated.-for-example-you-could-use-the-meanmedian-for-that-day-or-the-mean-for-that-5-minute-interval-etc.-create-a-new-dataset-that-is-equal-to-the-original-dataset-but-with-the-missing-data-filled-in.}}
+
+\begin{verbatim}
+#Copy data to NewData
+NewData <- data
+
+#Fill in NA values by mean for that 5-minute interval
+for (i in 1:length(times)){
+  NewData[which(NewData$interval == times[i] & is.na(NewData$steps)),] = df[which(df$interval == times[i]),]
+}
+\end{verbatim}
+
+\hypertarget{histogram-of-the-total-number-of-steps-taken-each-day-after-missing-values-are-imputed}{%
+\subsubsection{Histogram of the total number of steps taken each day
+after missing values are
+imputed}\label{histogram-of-the-total-number-of-steps-taken-each-day-after-missing-values-are-imputed}}
+
+\hypertarget{make-a-histogram-of-the-total-number-of-steps-taken-each-day-and-calculate-and-report-the-mean-and-median-total-number-of-steps-taken-per-day.}{%
+\paragraph{Make a histogram of the total number of steps taken each day
+and Calculate and report the mean and median total number of steps taken
+per
+day.}\label{make-a-histogram-of-the-total-number-of-steps-taken-each-day-and-calculate-and-report-the-mean-and-median-total-number-of-steps-taken-per-day.}}
+
+\begin{verbatim}
+#Finds the unique records of the variable date
+days <- unique(NewData$date)
+
+#Sum all records of same date
+for (i in 1:length(days)){
+  subset <- NewData[which(NewData$date == days[i]),]
+  if(i == 1){
+    NewDf <- data.frame(days[1], sum(subset$steps))
+  }else{
+    NewDf <- rbind(NewDf, c(days[i], sum(subset$steps)))
+  }
+}
+
+#Set column names
+colnames(NewDf) <- c("date","steps")
+
+#Convert to integer
+NewDf$steps <- as.integer(NewDf$steps)
+
+#Histogram
+library(ggplot2)
+
+y <- ggplot(NewDf, aes(x = steps)) 
+a <- y + geom_histogram(bins = 30) + ylab("Frequency")
+a
+
+print(paste("The new mean and median are", round(mean(NewData$steps),2),"and", paste0(median(NewData$steps), ", respectively.")))
+\end{verbatim}
+
+\hypertarget{do-these-values-differ-from-the-estimates-from-the-first-part-of-the-assignment}{%
+\paragraph{Do these values differ from the estimates from the first part
+of the
+assignment?}\label{do-these-values-differ-from-the-estimates-from-the-first-part-of-the-assignment}}
+
+\begin{verbatim}
+if(mean(NewData$steps) != mean(data1$steps)){ answer <- "The mean has changed"}else{answer <- "The mean hasn't changed"}
+
+if(median(NewData$steps) != median(data1$steps)){ answer2 <-"the median has changed"}else{answer2 <- "the median hasn't changed"}
+
+print(paste(answer,"and", answer2))
+\end{verbatim}
+
+\hypertarget{what-is-the-impact-of-imputing-missing-data-on-the-estimates-of-the-total-daily-number-of-steps}{%
+\paragraph{What is the impact of imputing missing data on the estimates
+of the total daily number of
+steps?}\label{what-is-the-impact-of-imputing-missing-data-on-the-estimates-of-the-total-daily-number-of-steps}}
+
+\begin{verbatim}
+if(sum(NewData$steps) - sum(data1$steps) > 0){ 
+    answer <- paste("The number of steps increased", sum(NewData$steps) - sum(data1$steps), "steps.")
+}else{
+      answer <- paste("The number of steps decreased", sum(data1$steps) - sum(NewData$steps), "steps.")
+}
+print(answer)
+\end{verbatim}
+
+\hypertarget{panel-plot-comparing-the-average-number-of-steps-taken-per-5-minute-interval-across-weekdays-and-weekends}{%
+\subsubsection{Panel plot comparing the average number of steps taken
+per 5-minute interval across weekdays and
+weekends}\label{panel-plot-comparing-the-average-number-of-steps-taken-per-5-minute-interval-across-weekdays-and-weekends}}
+
+\hypertarget{create-a-new-factor-variable-in-the-dataset-with-two-levels-weekday-and-weekend-indicating-whether-a-given-date-is-a-weekday-or-weekend-day.}{%
+\paragraph{Create a new factor variable in the dataset with two levels
+-- ``weekday'' and ``weekend'' indicating whether a given date is a
+weekday or weekend
+day.}\label{create-a-new-factor-variable-in-the-dataset-with-two-levels-weekday-and-weekend-indicating-whether-a-given-date-is-a-weekday-or-weekend-day.}}
+
+\begin{verbatim}
+#install.packages("timeDate")
+library(timeDate)
+
+#Returns TRUE if the day is weekend, otherwise it returns FALSE
+weekendDay <- isWeekend(as.Date(data1$date))
+Data1 <-cbind(data1, weekendDay)
+
+#Set variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+Data1[which(Data1$weekendDay == TRUE),]$weekendDay <- "weekend"
+Data1[which(Data1$weekendDay == FALSE),]$weekendDay <- "weekday"
+
+#Transform to factor variable
+Data1$weekendDay <- as.factor(Data1$weekendDay)
+\end{verbatim}
+
+\hypertarget{make-a-panel-plot-containing-a-time-series-plot-of-the-5-minute-interval-x-axis-and-the-average-number-of-steps-taken-averaged-across-all-weekday-days-or-weekend-days-y-axis.}{%
+\paragraph{Make a panel plot containing a time series plot of the
+5-minute interval (x-axis) and the average number of steps taken,
+averaged across all weekday days or weekend days
+(y-axis).}\label{make-a-panel-plot-containing-a-time-series-plot-of-the-5-minute-interval-x-axis-and-the-average-number-of-steps-taken-averaged-across-all-weekday-days-or-weekend-days-y-axis.}}
+
+\begin{verbatim}
+#install.packages("ggpubr")
+library(ggpubr)
+
+typeOfDay <- c("weekday","weekend")
+
+#Finds the unique records of the variable interval
+times <- unique(Data1$interval)
+
+#Mean of all records of same interval
+for (i in 1:length(times)){
+  for(j in 1:length(typeOfDay)){
+    subset <- Data1[which(Data1$interval == times[i] & 
+                            Data1$weekendDay == typeOfDay[j]),]
+    if(j == 1){
+      if(i == 1){
+        df_weekday <- data.frame(times[1], round(mean(subset$steps), 2))
+      }else{
+        df_weekday <- rbind(df_weekday, c(times[i],  round(mean(subset$steps), 2)))
+      }
+    }else{
+      if(i == 1){
+        df_weekend <- data.frame(times[1], round(mean(subset$steps), 2))
+      }else{
+        df_weekend <- rbind(df_weekend, c(times[i],  round(mean(subset$steps), 2)))
+      }      
+    }
+  }
+}
+
+#Set column names
+colnames(df_weekday) <- c("interval","mean")
+colnames(df_weekend) <- c("interval","mean")
+
+#Convert to double
+df_weekday$mean <- as.double(df_weekday$mean)
+df_weekend$mean <- as.double(df_weekend$mean)
+
+y <- ggplot(df_weekday, aes(x = interval, y = mean))
+weekday <- y + geom_line() # + geom_point()
+
+y <- ggplot(df_weekend, aes(x = interval, y = mean))
+weekend <- y + geom_line() # + geom_point()
+
+
+ggarrange(weekend, weekday, 
+          labels = c("weekend", "weekday"),
+          ncol = 1, nrow = 2)
+\end{verbatim}
+
+\end{document}
